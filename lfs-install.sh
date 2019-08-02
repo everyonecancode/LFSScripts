@@ -7,6 +7,9 @@ if [ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
+# Fix for debian
+PATH=$PATH:/usr/sbin:/sbin
+
 # Variables
 LFS=/mnt/lfs
 
