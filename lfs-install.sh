@@ -30,4 +30,4 @@ useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 chown -v lfs $LFS/tools
 chown -v lfs $LFS/sources
 
-sudo -i -u lfs ./build-scripts.sh
+su -c ./build-scripts.sh - lfs
