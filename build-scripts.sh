@@ -1,4 +1,7 @@
 #!/bin/bash
+# run as lfs user
+
+source ~/.bashrc
 
 # Fail on error
 set -e
