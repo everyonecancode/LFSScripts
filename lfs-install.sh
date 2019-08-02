@@ -30,7 +30,7 @@ useradd -s /bin/bash -g lfs -m -k /dev/null lfs
 chown -v lfs $LFS/tools
 chown -v lfs $LFS/sources
 
-sudo -i -u lfs bash << eof
+exec sudo -i -u lfs bash - << eof
 
 # Prepare bash script for LFS user
 cat > ~/.bash_profile << "EOF"
