@@ -39,7 +39,7 @@ esac
 make install
 popd
 
-# GCC-8.2.0 - Pass 1 
+# GCC-8.2.0 - Pass 1
 tar -xf gcc-8.2.0.tar.xz
 pushd gcc-8.2.0
 tar -xf ../mpfr-4.0.2.tar.xz
