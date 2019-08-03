@@ -145,7 +145,7 @@ function temporary-binutils-pass2()
   mkdir -v build
   cd       build
   CC=$LFS_TGT-gcc                \
-  AR=$LFS_TGT-a r                 \
+  AR=$LFS_TGT-ar                 \
   RANLIB=$LFS_TGT-ranlib         \
   ../configure                   \
     --prefix=/tools            \
