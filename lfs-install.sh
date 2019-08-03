@@ -22,7 +22,7 @@ wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 
 # Fix for inconsistent file names
-mv tcl8.6.9-src.tar.gz tcl8.6.9.tar.gz
+mv $LFS/sources/tcl8.6.9-src.tar.gz $LFS/sources/tcl8.6.9.tar.gz
 
 chmod -v a+wt $LFS/sources
 mkdir -v $LFS/tools
