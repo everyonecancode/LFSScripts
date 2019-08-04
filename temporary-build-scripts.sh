@@ -489,7 +489,7 @@ install_package gzip-1.10.tar.xz temporary-gzip
 install_package make-4.2.1.tar.bz2 temporary-make
 install_package patch-2.7.6.tar.xz temporary-patch
 install_package perl-5.28.1.tar.xz temporary-perl
-install_package Python-3.7.2.tar.xz temporary-Python
+install_package Python-3.7.2.tar.xz temporary-python
 install_package sed-4.7.tar.xz temporary-sed
 install_package tar-1.31.tar.xz temporary-tar
 install_package texinfo-6.5.tar.xz temporary-texinfo
