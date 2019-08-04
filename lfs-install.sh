@@ -12,14 +12,19 @@ PATH=$PATH:/usr/sbin:/sbin
 
 # Variables
 LFS=/mnt/lfs
+wget_timout=30
 
 # Get sources and prepare LFS specific directories
 mkdir -v $LFS/sources
 wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
-wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
 
-# Fail only on generic error
-if [ $? -eq 1 ]; then
+# dowload files
+while [ $wget_timout -gt 0 ]; do
+  wget --input-file=wget-list --continue --directory-prefix=$LFS/sources && break
+  let "$wget_timeout--"
+done
+
+if [ $wget_timout -eq 0 ]; then
   echo "Error occured while downloading packages"
   exit 1
 fi
