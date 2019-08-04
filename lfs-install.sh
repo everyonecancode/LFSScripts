@@ -21,7 +21,7 @@ wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
 # dowload files
 while [ $wget_timout -gt 0 ]; do
   # break if no error
-  wget --input-file=wget-list --continue --directory-prefix=$LFS/sources && break
+  wget --input-file=wget-list --continue --directory-prefix=$LFS/sources -a wget.log && break
 
   # break when number of files downloaded are equal to the number
   # of lines in wget-list
@@ -35,7 +35,7 @@ while [ $wget_timout -gt 0 ]; do
   if [ $(cat wget-list | wc -l) -eq $(($(ls -f $LFS/sources/ | wc -l)-2)) ]; then
     break
   fi
-  let "$wget_timeout--"
+  (($wget_timeout--))
 
   # There is an issue with ftp.gnu.org certificates when running
   # wget continously. Sleep should fix that.
