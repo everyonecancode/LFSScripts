@@ -36,6 +36,10 @@ while [ $wget_timout -gt 0 ]; do
     break
   fi
   let "$wget_timeout--"
+
+  # There is an issue with ftp.gnu.org certificates when running
+  # wget continously. Sleep should fix that.
+  sleep 5
 done
 
 if [ $wget_timout -eq 0 ]; then
