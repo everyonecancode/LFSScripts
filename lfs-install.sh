@@ -103,5 +103,5 @@ fi
 # TODO: For now no package management is needed. Fix for later?
 
 # Chroot to new environment. Using new script for that.
-cp final-build.scripts.sh $LFS
+cp final-build-scripts.sh $LFS/
 chroot "$LFS" final-build-scripts.sh
