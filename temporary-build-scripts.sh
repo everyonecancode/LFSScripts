@@ -470,7 +470,7 @@ install_package glibc-2.29.tar.xz temporary-glibc
 install_package gcc-8.2.0.tar.xz temporary-libstd
 install_package binutils-2.32.tar.xz temporary-binutils-pass2
 install_package gcc-8.2.0.tar.xz temporary-gcc-pass2
-install_package tcl8.6.9-src.tar.gz temporary-tcl
+install_package tcl8.6.9.tar.gz temporary-tcl
 install_package expect5.45.4.tar.gz temporary-expect5
 install_package dejagnu-1.6.2.tar.gz temporary-dejagnu
 install_package m4-1.4.18.tar.xz temporary-m4

@@ -3,8 +3,8 @@
 
 # Check if we are root
 if [ "$EUID" -ne 0 ]; then
-	echo "Please run this script as root"
-	exit 1
+  echo "Please run this script as root"
+  exit 1
 fi
 
 # Fix for debian
@@ -13,13 +13,16 @@ PATH=$PATH:/usr/sbin:/sbin
 # Variables
 LFS=/mnt/lfs
 
-# ensure exit on fail
-set -e
-
 # Get sources and prepare LFS specific directories
 mkdir -v $LFS/sources
 wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
 wget --input-file=wget-list --continue --directory-prefix=$LFS/sources
+
+# Fail only on generic error
+if [ $? -eq 1 ]; then
+  echo "Error occured while downloading packages"
+  exit 1
+fi
 
 # Fix for inconsistent file names
 mv $LFS/sources/tcl8.6.9-src.tar.gz $LFS/sources/tcl8.6.9.tar.gz
