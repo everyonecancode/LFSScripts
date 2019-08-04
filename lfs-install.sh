@@ -20,7 +20,21 @@ wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
 
 # dowload files
 while [ $wget_timout -gt 0 ]; do
+  # break if no error
   wget --input-file=wget-list --continue --directory-prefix=$LFS/sources && break
+
+  # break when number of files downloaded are equal to the number
+  # of lines in wget-list
+  # ls -f returns also . and .. folders, so the number of files in
+  # folder should be decremented by 2
+  # WARNING!!!
+  # This is working workaround, but it does not consider the possiblity
+  # of downloading incomplete file. If such thing happens, the build will
+  # fail.
+  # TODO:? Improve this to consider incomplete or broken files
+  if [ $(cat wget-list | wc -l) -eq $(($(ls -f $LFS/sources/ | wc -l)-2)) ]
+    break
+  fi
   let "$wget_timeout--"
 done
 
