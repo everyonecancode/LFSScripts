@@ -35,7 +35,7 @@ while [ $wget_timout -gt 0 ]; do
   if [ $(cat wget-list | wc -l) -eq $(($(ls -f $LFS/sources/ | wc -l)-2)) ]; then
     break
   fi
-  (($wget_timeout--))
+  ((wget_timeout--))
 
   # There is an issue with ftp.gnu.org certificates when running
   # wget continously. Sleep should fix that.
