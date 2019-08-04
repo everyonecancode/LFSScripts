@@ -24,6 +24,9 @@ if [ $? -eq 1 ]; then
   exit 1
 fi
 
+# Fail on error
+set -e
+
 # Fix for inconsistent file names
 mv $LFS/sources/tcl8.6.9-src.tar.gz $LFS/sources/tcl8.6.9.tar.gz
 
