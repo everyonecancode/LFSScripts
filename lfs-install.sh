@@ -32,7 +32,7 @@ while [ $wget_timout -gt 0 ]; do
   # of downloading incomplete file. If such thing happens, the build will
   # fail.
   # TODO:? Improve this to consider incomplete or broken files
-  if [ $(cat wget-list | wc -l) -eq $(($(ls -f $LFS/sources/ | wc -l)-2)) ]
+  if [ $(cat wget-list | wc -l) -eq $(($(ls -f $LFS/sources/ | wc -l)-2)) ]; then
     break
   fi
   let "$wget_timeout--"
