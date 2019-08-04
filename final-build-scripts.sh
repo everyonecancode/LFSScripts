@@ -1,16 +1,9 @@
-#!/bin/bash
+#!/tools/bin/bash
 
 set -e
-# Set variables for this build
-HOME=/root
-TERM="$TERM"
-PS1='(lfs chroot) \u:\w\$ '
-PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin
-
-# TODO: Probably not needed?
-# /tools/bin/bash --login +h
 
 # Create directories
+mkdir -pv /{bin,boot,etc/{opt,sysconfig},home,lib/firmware,mnt,opt}
 mkdir -pv /{media/{floppy,cdrom},sbin,srv,var}
 install -dv -m 0750 /root
 install -dv -m 1777 /tmp /var/tmp

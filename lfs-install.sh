@@ -104,4 +104,5 @@ fi
 
 # Chroot to new environment. Using new script for that.
 cp final-build-scripts.sh $LFS/
-chroot "$LFS" final-build-scripts.sh
+# Set variables for this build
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /sbin/chroot "$LFS" /tools/bin/bash final-build-scripts.sh
