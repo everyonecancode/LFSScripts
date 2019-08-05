@@ -19,4 +19,4 @@ Usage:
 
 ## About License
 Just use it and don't hurt yourself. I am not responsible for any harm that may come your way after using those scripts, including system crash, system unusability, monitor flickering, AI uprising and any other. You are on your own.
-However, as I just copied most code from LFS guys, I am not uploading any license or requesting that my name should be put in any of this code version. They are the ones that you should worship for figuring out all the configuration flags needed in the builds.
+However, as I just copied most code from LFS guys, I am not uploading any license or requesting that my name should be put in any fork or copy of this repo. They are the ones that you should worship for figuring out all the configuration flags needed in the builds.
