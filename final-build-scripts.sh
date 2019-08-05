@@ -249,7 +249,7 @@ function final-binutils()
               --enable-64-bit-bfd \
               --with-system-zlib
   make tooldir=/usr
-  make -k check
+  # make -k check
   make tooldir=/usr install
 }
 
