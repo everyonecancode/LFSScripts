@@ -1,1 +1,16 @@
 # LFSScripts
+
+!WARNING!
+
+This is still work in progress. I made this repo public righ now because it's much easier to download git repository in VM environment than setting up shared folders with Live CD VM and host system (yes, I am lazy).
+
+Bunch of scripts created for "quickly" building a LFS machine. This has been created with virtual machine in mind, with a single partition created, so not really an optimal solution for main personal machine, but for fun with kernel and system configuration. It works when run on Debian Live CD, so we can run VM, launch the CD, create and mount drive and just run the scripts.
+
+All build commands and version-check.sh script has been copied from LFS site, http://www.linuxfromscratch.org. Big shoutout to them, without it this scripts would either never exists or it would take a much longer to complete. 
+
+Usage:
+1. Format drive (usally /dev/sda) into single partition and mount it to /mnt/lfs
+2. Run version-check.sh to see if our system satisfies the requirements
+3. Run ./lfs-install.sh AS ROOT!
+4. Go for a walk, make some tea, learn a new language or start a family, because building all this software takes a LOT of time.
+5. Enjoy your new hacky system.
