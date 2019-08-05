@@ -84,7 +84,7 @@ function default()
 {
   ./configure --prefix=/usr
   make
-  make check
+  # make check
   make install
 }
 
@@ -132,7 +132,7 @@ function final-glibc()
     i?86)   ln -sfnv $PWD/elf/ld-linux.so.2        /lib ;;
     x86_64) ln -sfnv $PWD/elf/ld-linux-x86-64.so.2 /lib ;;
   esac
-  make check
+  # make check
   touch /etc/ld.so.conf
   sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
   make install
@@ -173,7 +173,7 @@ function final-zlib()
 {
   ./configure --prefix=/usr
   make
-  make check
+  # make check
   make install
   mv -v /usr/lib/libz.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
@@ -203,7 +203,7 @@ sed -i 's/IO_ftrylockfile/IO_EOF_SEEN/' lib/*.c
 echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 ./configure --prefix=/usr
 make
-make check
+# make check
 make install
 }
 
@@ -229,7 +229,7 @@ EOF
               --mandir=/usr/share/man \
               --infodir=/usr/share/info
   make
-  echo "quit" | ./bc/bc -l Test/checklib.b
+  # echo "quit" | ./bc/bc -l Test/checklib.b
   make install
 }
 
@@ -262,8 +262,8 @@ function final-gmp()
               --docdir=/usr/share/doc/gmp-6.1.2
   make
   make html
-  make check 2>&1 | tee gmp-check-log
-  awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
+  # make check 2>&1 | tee gmp-check-log
+  # awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
   make install
   make install-html
 }
@@ -277,7 +277,7 @@ function final-mpfr()
               --docdir=/usr/share/doc/mpfr-4.0.2
   make
   make html
-  make check
+  # make check
   make install
   make install-html
 }
@@ -290,7 +290,7 @@ function final-mpc()
               --docdir=/usr/share/doc/mpc-1.1.0
   make
   make html
-  make check
+  # make check
   make install
   make install-html
 }
@@ -335,9 +335,9 @@ function final-gcc()
   make
   ulimit -s 32768
   rm ../gcc/testsuite/g++.dg/pr83239.C
-  chown -Rv nobody .
-  su nobody -s /bin/bash -c "PATH=$PATH make -k check"
-  ../contrib/test_summary
+  # chown -Rv nobody .
+  # su nobody -s /bin/bash -c "PATH=$PATH make -k check"
+  # ../contrib/test_summary
   make install
   ln -sv ../usr/bin/cpp /lib
   ln -sv gcc /usr/bin/cc
@@ -407,7 +407,7 @@ function final-pkgconfig()
               --disable-host-tool        \
               --docdir=/usr/share/doc/pkg-config-0.29.2
   make
-  make check
+  # make check
   make install
 }
 
@@ -447,7 +447,7 @@ function final-attr()
               --sysconfdir=/etc \
               --docdir=/usr/share/doc/attr-2.4.48
   make
-  make check
+  # make check
   make install
   mv -v /usr/lib/libattr.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
@@ -486,7 +486,7 @@ function final-sed()
   ./configure --prefix=/usr --bindir=/bin
   make
   make html
-  make check
+  # make check
   make install
   install -d -m755           /usr/share/doc/sed-4.7
   install -m644 doc/sed.html /usr/share/doc/sed-4.7
@@ -522,7 +522,7 @@ function final-flex()
   HELP2MAN=/tools/bin/true \
   ./configure --prefix=/usr --docdir=/usr/share/doc/flex-2.6.4
   make
-  make check
+  # make check
   make install
   ln -sv flex /usr/bin/lex
 }
@@ -545,7 +545,7 @@ function final-bash()
               --with-installed-readline
   make
   chown -Rv nobody .
-  su nobody -s /bin/bash -c "PATH=$PATH HOME=/home make tests"
+  # su nobody -s /bin/bash -c "PATH=$PATH HOME=/home make tests"
   make install
   mv -vf /usr/bin/bash /bin
   exec /bin/bash --login +h
@@ -558,7 +558,7 @@ function final-gdbm()
               --disable-static \
               --enable-libgdbm-compat
   make
-  make check
+  # make check
   make install
 }
 
@@ -567,7 +567,7 @@ function final-gperf()
 {
   ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
   make
-  make -j1 check
+  # make -j1 check
   make install
 }
 
@@ -579,7 +579,7 @@ function final-expat()
               --disable-static \
               --docdir=/usr/share/doc/expat-2.2.6
   make
-  make check
+  # make check
   make install
   install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-2.2.6
 }
@@ -597,7 +597,7 @@ function final-inetutils()
               --disable-rsh        \
               --disable-servers
   make
-  make check
+  # make check
   make install
   mv -v /usr/bin/{hostname,ping,ping6,traceroute} /bin
   mv -v /usr/bin/ifconfig /sbin
@@ -617,7 +617,7 @@ function final-perl()
                     -Duseshrplib                  \
                     -Dusethreads
   make
-  make -k test
+  # make -k test
   make install
   unset BUILD_ZLIB BUILD_BZIP2
 }
@@ -627,7 +627,7 @@ function final-xmlparser()
 {
   perl Makefile.PL
   make
-  make test
+#  make test
   make install
 }
 
@@ -662,7 +662,7 @@ function final-xz()
               --disable-static \
               --docdir=/usr/share/doc/xz-5.2.4
   make
-  make check
+  # make check
   make install
   mv -v   /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
   mv -v /usr/lib/liblzma.so.* /lib
@@ -699,7 +699,7 @@ function final-gettext()
               --disable-static \
               --docdir=/usr/share/doc/gettext-0.19.8.1
   make
-  make check
+  # make check
   make install
   chmod -v 0755 /usr/lib/preloadable_libintl.so
 }
@@ -709,7 +709,7 @@ function final-libelf()
 {
   ./configure --prefix=/usr
   make
-  make check
+  # make check
   make -C libelf install
   install -vm644 config/libelf.pc /usr/lib/pkgconfig
 }
@@ -725,7 +725,7 @@ function final-libffi()
       -i libffi.pc.in
   ./configure --prefix=/usr --disable-static --with-gcc-arch=native
   make
-  make check
+  # make check
   make install
 }
 
@@ -738,7 +738,7 @@ function final-openssl()
           shared                \
           zlib-dynamic
   make
-  make test
+#  make test
   sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
   make MANSUFFIX=ssl install
   mv -v /usr/share/doc/openssl /usr/share/doc/openssl-1.1.1a
@@ -771,8 +771,8 @@ function final-ninja()
 {
   python3 configure.py --bootstrap
   python3 configure.py
-  ./ninja ninja_test
-  ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
+#  ./ninja ninja_test
+#  ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
   install -vm755 ninja /usr/bin/
   install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
   install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
@@ -796,11 +796,11 @@ function final-coreutils()
               --prefix=/usr            \
               --enable-no-install-program=kill,uptime
   FORCE_UNSAFE_CONFIGURE=1 make
-  make NON_ROOT_USERNAME=nobody check-root
-  echo "dummy:x:1000:nobody" >> /etc/group
-  chown -Rv nobody .
-  su nobody -s /bin/bash \
-            -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
+  # make NON_ROOT_USERNAME=nobody check-root
+  # echo "dummy:x:1000:nobody" >> /etc/group
+  # chown -Rv nobody .
+  # su nobody -s /bin/bash \
+  #           -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
   sed -i '/dummy/d' /etc/group
   make install
   mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
@@ -837,7 +837,7 @@ function final-findutils()
   echo "#define _IO_IN_BACKUP 0x100" >> gl/lib/stdio-impl.h
   ./configure --prefix=/usr --localstatedir=/var/lib/locate
   make
-  make check
+  # make check
   make install
   mv -v /usr/bin/find /bin
   sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
@@ -897,7 +897,7 @@ function final-kbd()
   sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
   PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --disable-vlock
   make
-  make check
+  # make check
   make install
   mkdir -v       /usr/share/doc/kbd-2.0.4
   cp -R -v docs/doc/* /usr/share/doc/kbd-2.0.4
@@ -909,7 +909,7 @@ function final-make()
   sed -i '211,217 d; 219,229 d; 232 d' glob/glob.c
   ./configure --prefix=/usr
   make
-  make PERL5LIB=$PWD/tests/ check
+  # make PERL5LIB=$PWD/tests/ check
   make install
 }
 
@@ -927,7 +927,7 @@ function final-mandb()
               --with-systemdtmpfilesdir=           \
               --with-systemdsystemunitdir=
   make
-  make check
+  # make check
   make install
 }
 
@@ -939,7 +939,7 @@ function final-tar()
   ./configure --prefix=/usr \
               --bindir=/bin
   make
-  make check
+  # make check
   make install
   make -C doc install-html docdir=/usr/share/doc/tar-1.31
 }
@@ -950,7 +950,7 @@ function final-texinfo()
   sed -i '5481,5485 s/({/(\\{/' tp/Texinfo/Parser.pm
   ./configure --prefix=/usr --disable-static
   make
-  make check
+  # make check
   make install
   make TEXMF=/usr/share/texmf install-tex
   pushd /usr/share/info
@@ -967,7 +967,7 @@ function final-vim()
   echo '#define SYS_VIMRC_FILE "/etc/vimrc"' >> src/feature.h
   ./configure --prefix=/usr
   make
-  LANG=en_US.UTF-8 make -j1 test &> vim-test.log
+  # LANG=en_US.UTF-8 make -j1 test &> vim-test.log
   make install
   ln -sv vim /usr/bin/vi
   for L in  /usr/share/man/{,*/}man1/vim.1; do
@@ -1006,7 +1006,7 @@ function final-procps()
   sed -i -r 's|(pmap_initname)\\\$|\1|' testsuite/pmap.test/pmap.exp
   sed -i '/set tty/d' testsuite/pkill.test/pkill.exp
   rm testsuite/pgrep.test/pgrep.exp
-  make check
+  # make check
   make install
   mv -v /usr/lib/libprocps.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so
@@ -1050,7 +1050,7 @@ function final-e2fsprogs()
               --disable-uuidd         \
               --disable-fsck
   make
-  make check
+  # make check
   make install
   make install-libs
   chmod -v u+w /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
