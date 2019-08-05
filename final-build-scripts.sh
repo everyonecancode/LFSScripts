@@ -1128,7 +1128,7 @@ function install_package()
 }
 
 install_package linux-4.20.12.tar.xz final-linux
-install_package man-pages-4.16.tar.xz final-man-pages
+install_package man-pages-4.16.tar.xz final-manpages
 install_package glibc-2.29.tar.xz final-glibc
 
 # Adjust the toolchain
