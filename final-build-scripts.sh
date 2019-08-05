@@ -344,6 +344,10 @@ function final-gcc()
   install -v -dm755 /usr/lib/bfd-plugins
   ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/8.2.0/liblto_plugin.so \
           /usr/lib/bfd-plugins/
+
+  # It seems that the build below sometimes fails, still pointing to library
+  # located in /tools directory. Generating spec file seems to solve this
+  gcc -dumpspecs | sed -e 's@/tools@@g' > `dirname $(gcc --print-libgcc-file-name)`/specs
   echo 'int main(){}' > dummy.c
   cc dummy.c -v -Wl,--verbose &> dummy.log
   readelf -l a.out | grep ': /lib'
