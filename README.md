@@ -1,6 +1,7 @@
 # LFSScripts
 
 !WARNING!
+
 This is still work in progress. I made this repo public righ now because it's much easier to download git repository in VM environment than setting up shared folders with Live CD VM and host system (yes, I am lazy).
 
 Bunch of scripts created for "quickly" building a LFS machine. This has been created with virtual machine in mind, with a single partition created, so not really an optimal solution for main personal machine, but for fun with kernel and system configuration. It works when run on Debian Live CD, so we can run VM, launch the CD, create and mount drive and just run the scripts.
