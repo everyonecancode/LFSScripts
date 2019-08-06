@@ -333,8 +333,8 @@ function final-gcc()
               --disable-libmpx         \
               --with-system-zlib
   make
-  ulimit -s 32768
-  rm ../gcc/testsuite/g++.dg/pr83239.C
+  # ulimit -s 32768
+  # rm ../gcc/testsuite/g++.dg/pr83239.C
   # chown -Rv nobody .
   # su nobody -s /bin/bash -c "PATH=$PATH make -k check"
   # ../contrib/test_summary
@@ -345,6 +345,9 @@ function final-gcc()
   ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/8.2.0/liblto_plugin.so \
           /usr/lib/bfd-plugins/
 
+  # Temporarily disable "stop on error" flag to enable logging of errors
+  set +e
+
   # It seems that the build below sometimes fails, still pointing to library
   # located in /tools directory. Generating spec file seems to solve this
   gcc -dumpspecs | sed -e 's@/tools@@g' > `dirname $(gcc --print-libgcc-file-name)`/specs
@@ -352,34 +355,35 @@ function final-gcc()
   cc dummy.c -v -Wl,--verbose &> dummy.log
   readelf -l a.out | grep ': /lib'
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: readelf -l a.out | grep ': /lib' failed "
     exit 1
   fi
   grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: grep -o '/usr/lib.*/crt[1in].*succeeded' dummy.log failed"
     exit 1
   fi
   grep -B1 '^ /usr/include' dummy.log
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: grep -B1 '^ /usr/include' dummy.log failed"
     exit 1
   fi
   grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g'
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: grep 'SEARCH.*/usr/lib' dummy.log |sed 's|; |\n|g' failed"
     exit 1
   fi
   grep "/lib.*/libc.so.6 " dummy.log
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: grep /lib.*/libc.so.6 dummy.log failed"
     exit 1
   fi
   grep found dummy.log
   if [ $? -eq 1 ]; then
-    echo "Linking did not work!"
+    echo "GCC: grep found dummy.log failed"
     exit 1
   fi
+  set -e
   rm -v dummy.c a.out dummy.log
   mkdir -pv /usr/share/gdb/auto-load/usr/lib
   mv -v /usr/lib/*gdb.py /usr/share/gdb/auto-load/usr/lib
