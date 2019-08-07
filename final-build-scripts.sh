@@ -552,7 +552,6 @@ function final-bash()
   # su nobody -s /bin/bash -c "PATH=$PATH HOME=/home make tests"
   make install
   mv -vf /usr/bin/bash /bin
-  exec /bin/bash --login +h
 }
 
 # GDBM-1.18.1
