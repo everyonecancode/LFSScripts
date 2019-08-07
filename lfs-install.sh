@@ -52,6 +52,7 @@ set -e
 
 # Fix for inconsistent file names
 mv $LFS/sources/tcl8.6.9-src.tar.gz $LFS/sources/tcl8.6.9.tar.gz
+mv $LFS/sources/vim-8.1.tar.bz2 $LFS/sources/vim81.tar.bz2
 
 chmod -v a+wt $LFS/sources
 mkdir -v $LFS/tools
