@@ -52,6 +52,7 @@ set -e
 
 # Fix for inconsistent file names
 mv $LFS/sources/tcl8.6.9-src.tar.gz $LFS/sources/tcl8.6.9.tar.gz
+mv $LFS/sources/vim-8.1.tar.bz2 $LFS/sources/vim81.tar.bz2
 
 chmod -v a+wt $LFS/sources
 mkdir -v $LFS/tools
@@ -105,4 +106,4 @@ fi
 # Chroot to new environment. Using new script for that.
 cp final-build-scripts.sh $LFS/
 # Set variables for this build
-HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /sbin/chroot "$LFS" /tools/bin/bash final-build-scripts.sh
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /sbin/chroot "$LFS" /tools/bin/bash +h final-build-scripts.sh
