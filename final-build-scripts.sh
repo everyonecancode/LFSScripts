@@ -1242,7 +1242,7 @@ install_package patch-2.7.6.tar.xz default
 install_package man-db-2.8.5.tar.xz final-mandb
 install_package tar-1.31.tar.xz final-tar
 install_package texinfo-6.5.tar.xz final-texinfo
-install_package vim-8.1.tar.bz2 final-vim
+install_package vim81.tar.bz2 final-vim
 install_package procps-ng-3.3.15.tar.xz final-procps
 install_package util-linux-2.33.1.tar.xz final-util
 install_package e2fsprogs-1.44.5.tar.gz final-e2fsprogs
