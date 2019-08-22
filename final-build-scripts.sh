@@ -85,7 +85,7 @@ function default()
   ./configure --prefix=/usr
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Linux-4.20.12 API Headers
@@ -94,13 +94,15 @@ function final-linux()
   make mrproper
   make INSTALL_HDR_PATH=dest headers_install
   find dest/include \( -name .install -o -name ..install.cmd \) -delete
-  cp -rv dest/include/* /usr/include
+  mkdir -pv /usr/pkg/linux/4.20.12/include
+  cp -rv dest/include/* /usr/pkg/linux/4.20.12/include
+  cp -rvs  /usr/pkg/linux/4.20.12/include/* /usr/include/
 }
 
 # Man-pages-4.16
 function final-manpages
 {
-  make install
+  make DESTDIR=/usr/pkg/$1/$2/ install
 }
 
 # Glibc-2.29
@@ -135,7 +137,7 @@ function final-glibc()
   # make check
   touch /etc/ld.so.conf
   sed '/test-installation/s@$(PERL)@echo not running@' -i ../Makefile
-  make install
+  make DESTDIR=/usr/pkg/$1/$2/ install
   cp -v ../nscd/nscd.conf /etc/nscd.conf
   mkdir -pv /var/cache/nscd
   mkdir -pv /usr/lib/locale
@@ -174,8 +176,8 @@ function final-zlib()
   ./configure --prefix=/usr
   make
   # make check
-  make install
-  mv -v /usr/lib/libz.so.* /lib
+  make DESTDIR=/usr/pkg/$1/$2/ install
+  cp -v /usr/pkg/$1/$2/usr/lib/libz.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libz.so) /usr/lib/libz.so
 }
 
@@ -188,12 +190,12 @@ function final-readline()
               --disable-static \
               --docdir=/usr/share/doc/readline-8.0
   make SHLIB_LIBS="-L/tools/lib -lncursesw"
-  make SHLIB_LIBS="-L/tools/lib -lncursesw" install
-  mv -v /usr/lib/lib{readline,history}.so.* /lib
+  make SHLIB_LIBS="-L/tools/lib -lncursesw" DESTDIR=/usr/pkg/$1/$2/ install
+  cp -v /usr/pkg/$1/$2/usr/lib/lib{readline,history}.so.* /lib
   chmod -v u+w /lib/lib{readline,history}.so.*
   ln -sfv ../../lib/$(readlink /usr/lib/libreadline.so) /usr/lib/libreadline.so
   ln -sfv ../../lib/$(readlink /usr/lib/libhistory.so ) /usr/lib/libhistory.so
-  install -v -m644 doc/*.{ps,pdf,html,dvi} /usr/share/doc/readline-8.0
+  install -v -m644 doc/*.{ps,pdf,html,dvi} /usr/pkg/$1/$2/usr/share/doc/readline-8.0
 }
 
 # M4-1.4.18
@@ -204,7 +206,7 @@ echo "#define _IO_IN_BACKUP 0x100" >> lib/stdio-impl.h
 ./configure --prefix=/usr
 make
 # make check
-make install
+make DESTDIR=/usr/pkg/$1/$2/ install
 }
 
 # Bc-1.07.1
@@ -230,7 +232,7 @@ EOF
               --infodir=/usr/share/info
   make
   # echo "quit" | ./bc/bc -l Test/checklib.b
-  make install
+  make DESTDIR=/usr/pkg/$1/$2/ install
 }
 
 # Binutils-2.32
@@ -248,9 +250,9 @@ function final-binutils()
               --disable-werror    \
               --enable-64-bit-bfd \
               --with-system-zlib
-  make tooldir=/usr
+  make tooldir=/usr/pkg/$1/$2/
   # make -k check
-  make tooldir=/usr install
+  make tooldir=/usr/pkg/$1/$2/ install
 }
 
 # GMP-6.1.2
@@ -264,8 +266,8 @@ function final-gmp()
   make html
   # make check 2>&1 | tee gmp-check-log
   # awk '/# PASS:/{total+=$3} ; END{print total}' gmp-check-log
-  make install
-  make install-html
+  make DESTDIR=/usr/pkg/$1/$2/ install
+  make DESTDIR=/usr/pkg/$1/$2/ install-html
 }
 
 # MPFR-4.0.2
@@ -278,8 +280,8 @@ function final-mpfr()
   make
   make html
   # make check
-  make install
-  make install-html
+  make DESTDIR=/usr/pkg/$1/$2/ install
+  make DESTDIR=/usr/pkg/$1/$2/ install-html
 }
 
 # MPC-1.1.0
@@ -291,8 +293,8 @@ function final-mpc()
   make
   make html
   # make check
-  make install
-  make install-html
+  make DESTDIR=/usr/pkg/$1/$2/ install
+  make DESTDIR=/usr/pkg/$1/$2/ install-html
 }
 
 # Shadow-4.6
@@ -307,8 +309,8 @@ function final-shadow()
   sed -i 's/1000/999/' etc/useradd
   ./configure --sysconfdir=/etc --with-group-name-max-length=32
   make
-  make install
-  mv -v /usr/bin/passwd /bin
+  make DESTDIR=/usr/pkg/$1/$2/ install
+  cp -v /usr/pkg/$1/$2/usr/bin/passwd /bin
   pwconv
   grpconv
 }
@@ -338,7 +340,13 @@ function final-gcc()
   # chown -Rv nobody .
   # su nobody -s /bin/bash -c "PATH=$PATH make -k check"
   # ../contrib/test_summary
-  make install
+  make DESTDIR=/usr/pkg/$1/$2/ install
+
+  # This is a corner case, where the package has to be fully installed
+  # inside build function and not in general installation function.
+  # This should, however, not break the build.
+  cp -rsv /usr/pkg/$1/$2/* /
+
   ln -sv ../usr/bin/cpp /lib
   ln -sv gcc /usr/bin/cc
   install -v -dm755 /usr/lib/bfd-plugins
@@ -398,11 +406,11 @@ function final-bzip2()
   make -f Makefile-libbz2_so
   make clean
   make
-  make PREFIX=/usr install
+  make DESTDIR=/usr/pkg/$1/$2/usr install
   cp -v bzip2-shared /bin/bzip2
   cp -av libbz2.so* /lib
   ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
-  rm -v /usr/bin/{bunzip2,bzcat,bzip2}
+  rm -v  /usr/pkg/$1/$2/usr/bin/{bunzip2,bzcat,bzip2}
   ln -sv bzip2 /bin/bunzip2
   ln -sv bzip2 /bin/bzcat
 }
@@ -416,7 +424,7 @@ function final-pkgconfig()
               --docdir=/usr/share/doc/pkg-config-0.29.2
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Ncurses-6.1
@@ -431,19 +439,19 @@ function final-ncurses()
               --enable-pc-files       \
               --enable-widec
   make
-  make install
-  mv -v /usr/lib/libncursesw.so.6* /lib
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v /usr/pkg/$1/$2/usr/lib/libncursesw.so.6* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libncursesw.so) /usr/lib/libncursesw.so
   for lib in ncurses form panel menu ; do
-      rm -vf                    /usr/lib/lib${lib}.so
-      echo "INPUT(-l${lib}w)" > /usr/lib/lib${lib}.so
-      ln -sfv ${lib}w.pc        /usr/lib/pkgconfig/${lib}.pc
+      rm -vf                    /usr/pkg/$1/$2/usr/lib/lib${lib}.so
+      echo "INPUT(-l${lib}w)" > /usr/pkg/$1/$2/usr/lib/lib${lib}.so
+      ln -sfv ${lib}w.pc        /usr/pkg/$1/$2/usr/lib/pkgconfig/${lib}.pc
   done
-  rm -vf                     /usr/lib/libcursesw.so
-  echo "INPUT(-lncursesw)" > /usr/lib/libcursesw.so
-  ln -sfv libncurses.so      /usr/lib/libcurses.so
-  mkdir -v       /usr/share/doc/ncurses-6.1
-  cp -v -R doc/* /usr/share/doc/ncurses-6.1
+  rm -vf                     /usr/pkg/$1/$2/usr/lib/libcursesw.so
+  echo "INPUT(-lncursesw)" > /usr/pkg/$1/$2/usr/lib/libcursesw.so
+  ln -sfv libncurses.so      /usr/pkg/$1/$2/usr/lib/libcurses.so
+  mkdir -v       /usr/pkg/$1/$2/usr/share/doc/ncurses-6.1
+  cp -v -R doc/* /usr/pkg/$1/$2/usr/share/doc/ncurses-6.1
 }
 
 # Attr-2.4.48
@@ -456,8 +464,8 @@ function final-attr()
               --docdir=/usr/share/doc/attr-2.4.48
   make
   # make check
-  make install
-  mv -v /usr/lib/libattr.so.* /lib
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v /usr/pkg/$1/$2/usr/lib/libattr.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) /usr/lib/libattr.so
 }
 
@@ -470,8 +478,8 @@ function final-acl()
               --libexecdir=/usr/lib \
               --docdir=/usr/share/doc/acl-2.2.53
   make
-  make install
-  mv -v /usr/lib/libacl.so.* /lib
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v /usr/pkg/$1/$2/usr/lib/libacl.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) /usr/lib/libacl.so
 }
 
@@ -480,9 +488,9 @@ function final-libcap()
 {
   sed -i '/install.*STALIBNAME/d' libcap/Makefile
   make
-  make RAISE_SETFCAP=no lib=lib prefix=/usr install
+  make RAISE_SETFCAP=no lib=lib prefix=/usr/pkg/$1/$2/usr install
   chmod -v 755 /usr/lib/libcap.so.2.26
-  mv -v /usr/lib/libcap.so.* /lib
+  cp -v /usr/pkg/$1/$2/usr/lib/libcap.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libcap.so) /usr/lib/libcap.so
 }
 
@@ -495,24 +503,24 @@ function final-sed()
   make
   make html
   # make check
-  make install
-  install -d -m755           /usr/share/doc/sed-4.7
-  install -m644 doc/sed.html /usr/share/doc/sed-4.7
+  make DESTDIR=/usr/pkg/$1/$2 install
+  install -d -m755           /usr/pkg/$1/$2/usr/share/doc/sed-4.7
+  install -m644 doc/sed.html /usr/pkg/$1/$2/usr/share/doc/sed-4.7
 }
 
 # Psmisc-23.2
 function final-psmisc()
 {
-  default
-  mv -v /usr/bin/fuser   /bin
-  mv -v /usr/bin/killall /bin
+  default "psmisc" "23.2"
+  cp -v /usr/pkg/pcmisc/23.2/usr/bin/fuser   /bin
+  mv -v /usr/pkg/pcmisc/23.2/usr/bin/killall /bin
 }
 
 # Iana-Etc-2.30
 function final-iana()
 {
   make
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Bison-3.3.2
@@ -520,7 +528,7 @@ function final-bison()
 {
   ./configure --prefix=/usr --docdir=/usr/share/doc/bison-3.3.2
   make
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Flex-2.6.4
@@ -531,7 +539,7 @@ function final-flex()
   ./configure --prefix=/usr --docdir=/usr/share/doc/flex-2.6.4
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
   ln -sv flex /usr/bin/lex
 }
 
@@ -540,8 +548,8 @@ function final-grep()
 {
   ./configure --prefix=/usr --bindir=/bin
   make
-  make -k check
-  make install
+  # make -k check
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Bash-5.0
@@ -554,8 +562,8 @@ function final-bash()
   make
   chown -Rv nobody .
   # su nobody -s /bin/bash -c "PATH=$PATH HOME=/home make tests"
-  make install
-  mv -vf /usr/bin/bash /bin
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -vf /usr/pkg/$1/$2/usr/bin/bash /bin
 }
 
 # GDBM-1.18.1
@@ -566,7 +574,7 @@ function final-gdbm()
               --enable-libgdbm-compat
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Gperf-3.1
@@ -575,7 +583,7 @@ function final-gperf()
   ./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.1
   make
   # make -j1 check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Expat-2.2.6
@@ -587,8 +595,8 @@ function final-expat()
               --docdir=/usr/share/doc/expat-2.2.6
   make
   # make check
-  make install
-  install -v -m644 doc/*.{html,png,css} /usr/share/doc/expat-2.2.6
+  make DESTDIR=/usr/pkg/$1/$2 install
+  install -v -m644 doc/*.{html,png,css} /usr/pkg/$1/$2/usr/share/doc/expat-2.2.6
 }
 
 # Inetutils-1.9.4
@@ -605,9 +613,9 @@ function final-inetutils()
               --disable-servers
   make
   # make check
-  make install
-  mv -v /usr/bin/{hostname,ping,ping6,traceroute} /bin
-  mv -v /usr/bin/ifconfig /sbin
+  make DESTDIR=/usr/pkg/$1/$2 install
+  mv -v /usr/pkg/$1/$2/usr/bin/{hostname,ping,ping6,traceroute} /bin
+  mv -v /usr/pkg/$1/$2/usr/bin/ifconfig /sbin
 }
 
 # Perl-5.28.1
@@ -625,7 +633,7 @@ function final-perl()
                     -Dusethreads
   make
   # make -k test
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
   unset BUILD_ZLIB BUILD_BZIP2
 }
 
@@ -635,22 +643,22 @@ function final-xmlparser()
   perl Makefile.PL
   make
 #  make test
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Intltool-0.51.0
 function final-intltool()
 {
   sed -i 's:\\\${:\\\$\\{:' intltool-update.in
-  default
-  install -v -Dm644 doc/I18N-HOWTO /usr/share/doc/intltool-0.51.0/I18N-HOWTO
+  default "intltool" "0.51.0"
+  install -v -Dm644 doc/I18N-HOWTO /usr/pkg/$1/$2/usr/share/doc/intltool-0.51.0/I18N-HOWTO
 }
 
 # Autoconf-2.69
 function final-autoconf()
 {
   sed '361 s/{/\\{/' -i bin/autoscan.in
-  default
+  default "autoconf" "2.69"
 }
 
 # Automake-1.16.1
@@ -659,7 +667,7 @@ function final-automake()
   ./configure --prefix=/usr --docdir=/usr/share/doc/automake-1.16.1
   make
   # make -j4 check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Xz-5.2.4
@@ -670,9 +678,9 @@ function final-xz()
               --docdir=/usr/share/doc/xz-5.2.4
   make
   # make check
-  make install
-  mv -v   /usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
-  mv -v /usr/lib/liblzma.so.* /lib
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v   /usr/pkg/$1/$2/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} /bin
+  cp -v   /usr/pkg/$1/$2/usr/lib/liblzma.so.* /lib
   ln -svf ../../lib/$(readlink /usr/lib/liblzma.so) /usr/lib/liblzma.so
 }
 
@@ -686,7 +694,7 @@ function final-kmod()
               --with-xz              \
               --with-zlib
   make
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 
   for target in depmod insmod lsmod modinfo modprobe rmmod; do
     ln -sfv ../bin/kmod /sbin/$target
@@ -707,8 +715,8 @@ function final-gettext()
               --docdir=/usr/share/doc/gettext-0.19.8.1
   make
   # make check
-  make install
-  chmod -v 0755 /usr/lib/preloadable_libintl.so
+  make DESTDIR=/usr/pkg/$1/$2 install
+  chmod -v 0755 /usr/pkg/$1/$2/usr/lib/preloadable_libintl.so
 }
 
 # Libelf from Elfutils-0.176
@@ -717,8 +725,8 @@ function final-libelf()
   ./configure --prefix=/usr
   make
   # make check
-  make -C libelf install
-  install -vm644 config/libelf.pc /usr/lib/pkgconfig
+  make -C libelf DESTDIR=/usr/pkg/$1/$2 install
+  install -vm644 config/libelf.pc /usr/pkg/$1/$2/usr/lib/pkgconfig
 }
 
 # Libffi-3.2.1
@@ -733,7 +741,7 @@ function final-libffi()
   ./configure --prefix=/usr --disable-static --with-gcc-arch=native
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # OpenSSL-1.1.1a
@@ -747,9 +755,9 @@ function final-openssl()
   make
 #  make test
   sed -i '/INSTALL_LIBS/s/libcrypto.a libssl.a//' Makefile
-  make MANSUFFIX=ssl install
-  mv -v /usr/share/doc/openssl /usr/share/doc/openssl-1.1.1a
-  cp -vfr doc/* /usr/share/doc/openssl-1.1.1a
+  make MANSUFFIX=ssl DESTDIR=/usr/pkg/$1/$2 install
+  mv -v /usr/pkg/$1/$2/usr/share/doc/openssl /usr/pkg/$1/$2/usr/share/doc/openssl-1.1.1a
+  cp -vfr doc/* /usr/pkg/$1/$2/usr/share/doc/openssl-1.1.1a
 }
 
 # Python-3.7.2
@@ -761,15 +769,15 @@ function final-python()
               --with-system-ffi   \
               --with-ensurepip=yes
   make
-  make install
-  chmod -v 755 /usr/lib/libpython3.7m.so
-  chmod -v 755 /usr/lib/libpython3.so
-  install -v -dm755 /usr/share/doc/python-3.7.2/html
+  make DESTDIR=/usr/pkg/$1/$2 install
+  chmod -v 755 /usr/pkg/$1/$2/usr/lib/libpython3.7m.so
+  chmod -v 755 /usr/pkg/$1/$2/usr/lib/libpython3.so
+  install -v -dm755 /usr/pkg/$1/$2/usr/share/doc/python-3.7.2/html
 
   tar --strip-components=1  \
       --no-same-owner       \
       --no-same-permissions \
-      -C /usr/share/doc/python-3.7.2/html \
+      -C /usr/pkg/$1/$2/usr/share/doc/python-3.7.2/html \
       -xvf ../python-3.7.2-docs-html.tar.bz2
 }
 
@@ -780,17 +788,17 @@ function final-ninja()
   python3 configure.py
 #  ./ninja ninja_test
 #  ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
-  install -vm755 ninja /usr/bin/
-  install -vDm644 misc/bash-completion /usr/share/bash-completion/completions/ninja
-  install -vDm644 misc/zsh-completion  /usr/share/zsh/site-functions/_ninja
+  install -vm755 ninja /usr/pkg/$1/$2/usr/bin/
+  install -vDm644 misc/bash-completion /usr/pkg/$1/$2/usr/share/bash-completion/completions/ninja
+  install -vDm644 misc/zsh-completion  /usr/pkg/$1/$2/usr/share/zsh/site-functions/_ninja
 }
 
 # Meson-0.49.2
 function final-meson()
 {
- python3 setup.py build
+  python3 setup.py build
   python3 setup.py install --root=dest
-  cp -rv dest/* /
+  cp -rv dest/* /usr/pkg/$1/$2/
 }
 
 # Coreutils-8.30
@@ -809,28 +817,28 @@ function final-coreutils()
   # su nobody -s /bin/bash \
   #           -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
   sed -i '/dummy/d' /etc/group
-  make install
-  mv -v /usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
-  mv -v /usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin
-  mv -v /usr/bin/{rmdir,stty,sync,true,uname} /bin
-  mv -v /usr/bin/chroot /usr/sbin
-  mv -v /usr/share/man/man1/chroot.1 /usr/share/man/man8/chroot.8
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v /usr/pkg/$1/$2/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
+  cp -v /usr/pkg/$1/$2/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin
+  cp -v /usr/pkg/$1/$2/usr/bin/{rmdir,stty,sync,true,uname} /bin
+  mv -v /usr/pkg/$1/$2/usr/bin/chroot /usr/pkg/$1/$2/usr/sbin
+  mv -v //usr/pkg/$1/$2usr/share/man/man1/chroot.1 /usr/pkg/$1/$2/usr/share/man/man8/chroot.8
   sed -i s/\"1\"/\"8\"/1 /usr/share/man/man8/chroot.8
-  mv -v /usr/bin/{head,nice,sleep,touch} /bin
+  cp -v /usr/pkg/$1/$2/usr/bin/{head,nice,sleep,touch} /bin
 }
 
 # Check-0.12.0
 function final-check()
 {
-  default
-  sed -i '1 s/tools/usr/' /usr/bin/checkmk
+  default "check" "0.12.0"
+  sed -i '1 s/tools/usr/' /usr/pkg/$1/$2/usr/bin/checkmk
 }
 
 # Gawk-4.2.1
 function final-gawk()
 {
   sed -i 's/extras//' Makefile.in
-  default
+  default "gawk" "4.2.1"
   mkdir -v /usr/share/doc/gawk-4.2.1
   cp    -v doc/{awkforai.txt,*.{eps,pdf,jpg}} /usr/share/doc/gawk-4.2.1
 }
@@ -845,9 +853,9 @@ function final-findutils()
   ./configure --prefix=/usr --localstatedir=/var/lib/locate
   make
   # make check
-  make install
-  mv -v /usr/bin/find /bin
-  sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/bin/updatedb
+  make DESTDIR=/usr/pkg/$1/$2 install
+  mv -v /usr/pkg/$1/$2/usr/bin/find /bin
+  sed -i 's|find:=${BINDIR}|find:=/bin|' /usr/pkg/$1/$2/usr/bin/updatedb
 }
 
 # Groff-1.22.4
@@ -855,7 +863,7 @@ function final-groff()
 {
   PAGE=A4 ./configure --prefix=/usr
   make -j1
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # GRUB-2.02
@@ -867,8 +875,8 @@ function final-grub()
               --disable-efiemu       \
               --disable-werror
   make
-  make install
-  mv -v /etc/bash_completion.d/grub /usr/share/bash-completion/completions
+  make DESTDIR=/usr/pkg/$1/$2 install
+  mv -v /etc/bash_completion.d/grub /usr/pkg/$1/$2/usr/share/bash-completion/completions
 }
 
 # Less-530
@@ -876,14 +884,14 @@ function final-less()
 {
   ./configure --prefix=/usr --sysconfdir=/etc
   make
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Gzip-1.10
 function final-gzip()
 {
-  default
-  mv -v /usr/bin/gzip /bin
+  default "gzip" "1.10"
+  cp -v /usr/pkg/gzip/1.10/usr/bin/gzip /bin
 }
 
 # IPRoute2-4.20.0
@@ -893,7 +901,7 @@ function final-iproute2()
   rm -fv man/man8/arpd.8
   sed -i 's/.m_ipt.o//' tc/Makefile
   make
-  make DOCDIR=/usr/share/doc/iproute2-4.20.0 install
+  make DOCDIR=/usr/pkg/$1/$2/usr/share/doc/iproute2-4.20.0 DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Kbd-2.0.4
@@ -905,9 +913,9 @@ function final-kbd()
   PKG_CONFIG_PATH=/tools/lib/pkgconfig ./configure --prefix=/usr --disable-vlock
   make
   # make check
-  make install
-  mkdir -v       /usr/share/doc/kbd-2.0.4
-  cp -R -v docs/doc/* /usr/share/doc/kbd-2.0.4
+  make DESTDIR=/usr/pkg/$1/$2 install
+  mkdir -v       /usr/pkg/$1/$2/usr/share/doc/kbd-2.0.4
+  cp -R -v docs/doc/* /usr/pkg/$1/$2/usr/share/doc/kbd-2.0.4
 }
 
 # Make-4.2.1
@@ -917,7 +925,7 @@ function final-make()
   ./configure --prefix=/usr
   make
   # make PERL5LIB=$PWD/tests/ check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Man-DB-2.8.5
@@ -935,7 +943,7 @@ function final-mandb()
               --with-systemdsystemunitdir=
   make
   # make check
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Tar-1.31
@@ -947,8 +955,8 @@ function final-tar()
               --bindir=/bin
   make
   # make check
-  make install
-  make -C doc install-html docdir=/usr/share/doc/tar-1.31
+  make DESTDIR=/usr/pkg/$1/$2 install
+  make -C doc install-html docdir=/usr/pkg/$1/$2/usr/share/doc/tar-1.31
 }
 
 # Texinfo-6.5
@@ -958,9 +966,9 @@ function final-texinfo()
   ./configure --prefix=/usr --disable-static
   make
   # make check
-  make install
-  make TEXMF=/usr/share/texmf install-tex
-  pushd /usr/share/info
+  make DESTDIR=/usr/pkg/$1/$2 install
+  make TEXMF=/usr/pkg/$1/$2/usr/share/texmf install-tex
+  pushd /usr/pkg/$1/$2/usr/share/info
   rm -v dir
   for f in *
     do install-info $f dir 2>/dev/null
@@ -975,12 +983,12 @@ function final-vim()
   ./configure --prefix=/usr
   make
   # LANG=en_US.UTF-8 make -j1 test &> vim-test.log
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
   ln -sv vim /usr/bin/vi
-  for L in  /usr/share/man/{,*/}man1/vim.1; do
+  for L in  /usr/pkg/$1/$2/usr/share/man/{,*/}man1/vim.1; do
       ln -sv vim.1 $(dirname $L)/vi.1
   done
-  ln -sv ../vim/vim81/doc /usr/share/doc/vim-8.1
+  ln -sv ../vim/vim81/doc /usr/pkg/$1/$2/usr/share/doc/vim-8.1
   cat > /etc/vimrc << "EOF"
 " Begin /etc/vimrc
 
@@ -1014,8 +1022,8 @@ function final-procps()
   sed -i '/set tty/d' testsuite/pkill.test/pkill.exp
   rm testsuite/pgrep.test/pgrep.exp
   # make check
-  make install
-  mv -v /usr/lib/libprocps.so.* /lib
+  make DESTDIR=/usr/pkg/$1/$2 install
+  cp -v /usr/pkg/$1/$2/usr/lib/libprocps.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libprocps.so) /usr/lib/libprocps.so
 }
 
@@ -1040,7 +1048,7 @@ function final-util()
   make
   # chown -Rv nobody .
   # su nobody -s /bin/bash -c "PATH=$PATH make -k check"
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # E2fsprogs-1.44.5
@@ -1058,14 +1066,14 @@ function final-e2fsprogs()
               --disable-fsck
   make
   # make check
-  make install
-  make install-libs
-  chmod -v u+w /usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
-  gunzip -v /usr/share/info/libext2fs.info.gz
-  install-info --dir-file=/usr/share/info/dir /usr/share/info/libext2fs.info
+  make DESTDIR=/usr/pkg/$1/$2 install
+  make DESTDIR=/usr/pkg/$1/$2 install-libs
+  chmod -v u+w /usr/pkg/$1/$2/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+  gunzip -v /usr/pkg/$1/$2/usr/share/info/libext2fs.info.gz
+  install-info --dir-file=/usr/pkg/$1/$2/usr/share/info/dir /usr/pkg/$1/$2/usr/share/info/libext2fs.info
   makeinfo -o      doc/com_err.info ../lib/et/com_err.texinfo
-  install -v -m644 doc/com_err.info /usr/share/info
-  install-info --dir-file=/usr/share/info/dir /usr/share/info/com_err.info
+  install -v -m644 doc/com_err.info /usr/pkg/$1/$2/usr/share/info
+  install-info --dir-file=/usr/pkg/$1/$2/usr/share/info/dir /usr/pkg/$1/$2/usr/share/info/com_err.info
 }
 
 # Sysklogd-1.5.1
@@ -1082,7 +1090,7 @@ function final-sysvinit()
 {
   patch -Np1 -i ../sysvinit-2.93-consolidated-1.patch
   make
-  make install
+  make DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Eudev-3.2.7
@@ -1108,9 +1116,9 @@ EOF
   mkdir -pv /lib/udev/rules.d
   mkdir -pv /etc/udev/rules.d
   # make LD_LIBRARY_PATH=/tools/lib check
-  make LD_LIBRARY_PATH=/tools/lib install
+  make LD_LIBRARY_PATH=/tools/lib DESTDIR=/usr/pkg/$1/$2 install
   tar -xvf ../udev-lfs-20171102.tar.bz2
-  make -f udev-lfs-20171102/Makefile.lfs install
+  make -f udev-lfs-20171102/Makefile.lfs DESTDIR=/usr/pkg/$1/$2 install
   LD_LIBRARY_PATH=/tools/lib udevadm hwdb --update
 }
 
@@ -1119,6 +1127,8 @@ EOF
 # $2 function final-for a package to run
 function install_package()
 {
+  # Create directories in /usr/pkg
+  mkdir -pv /usr/pkg/$3/$4/
   # As of now, all archives are tar based
   filefullname=$(basename -- "$1")
   foldername="${filefullname%.tar*}"
@@ -1127,16 +1137,19 @@ function install_package()
   pushd $foldername
 
   # Call main configuration function
-  $2
+  $2 $3 $4
 
   # Cleanup
   popd
   rm -rf $foldername
+
+  # Link /usr/pkg to user space
+  cp -rvs /usr/pkg/$3/$4/* /
 }
 
-install_package linux-4.20.12.tar.xz final-linux
-install_package man-pages-4.16.tar.xz final-manpages
-install_package glibc-2.29.tar.xz final-glibc
+install_package linux-4.20.12.tar.xz final-linux "linux" "4.20.12"
+install_package man-pages-4.16.tar.xz final-manpages  "man-pages" "4.16"
+install_package glibc-2.29.tar.xz final-glibc "glibc" "2.29"
 
 # Adjust the toolchain
 # TODO: Provide better logs
@@ -1182,73 +1195,73 @@ if [ $? -eq 1 ]; then
 fi
 rm -v dummy.c a.out dummy.log
 
-install_package zlib-1.2.11.tar.xz final-zlib
-install_package file-5.36.tar.gz default
-install_package readline-8.0.tar.gz final-readline
-install_package m4-1.4.18.tar.xz final-m4
-install_package bc-1.07.1.tar.gz final-bc
-install_package binutils-2.32.tar.xz final-binutils
-install_package gmp-6.1.2.tar.xz final-gmp
-install_package mpfr-4.0.2.tar.xz final-mpfr
-install_package mpc-1.1.0.tar.gz final-mpc
-install_package shadow-4.6.tar.xz final-shadow
-install_package gcc-8.2.0.tar.xz final-gcc
-install_package bzip2-1.0.6.tar.gz final-bzip2
-install_package pkg-config-0.29.2.tar.gz final-pkgconfig
-install_package ncurses-6.1.tar.gz final-ncurses
-install_package attr-2.4.48.tar.gz final-attr
-install_package acl-2.2.53.tar.gz final-acl
-install_package libcap-2.26.tar.xz final-libcap
-install_package sed-4.7.tar.xz final-sed
-install_package psmisc-23.2.tar.xz final-psmisc
-install_package iana-etc-2.30.tar.bz2 final-iana
-install_package bison-3.3.2.tar.xz final-bison
-install_package flex-2.6.4.tar.gz final-flex
-install_package grep-3.3.tar.xz final-grep
-install_package bash-5.0.tar.gz final-bash
-install_package libtool-2.4.6.tar.xz default
-install_package gdbm-1.18.1.tar.gz final-gdbm
-install_package gperf-3.1.tar.gz final-gperf
-install_package expat-2.2.6.tar.bz2 final-expat
-install_package inetutils-1.9.4.tar.xz final-inetutils
-install_package perl-5.28.1.tar.xz final-perl
-install_package XML-Parser-2.44.tar.gz final-xmlparser
-install_package intltool-0.51.0.tar.gz final-intltool
-install_package autoconf-2.69.tar.xz final-autoconf
-install_package automake-1.16.1.tar.xz final-automake
-install_package xz-5.2.4.tar.xz final-xz
-install_package kmod-26.tar.xz final-kmod
-install_package gettext-0.19.8.1.tar.xz final-gettext
-install_package elfutils-0.176.tar.bz2 final-libelf
-install_package libffi-3.2.1.tar.gz final-libffi
-install_package openssl-1.1.1a.tar.gz final-openssl
-install_package Python-3.7.2.tar.xz final-python
-install_package ninja-1.9.0.tar.gz final-ninja
-install_package meson-0.49.2.tar.gz final-meson
-install_package coreutils-8.30.tar.xz final-coreutils
-install_package check-0.12.0.tar.gz final-check
-install_package diffutils-3.7.tar.xz default
-install_package gawk-4.2.1.tar.xz final-gawk
-install_package findutils-4.6.0.tar.gz final-findutils
-install_package groff-1.22.4.tar.gz final-groff
-install_package grub-2.02.tar.xz final-grub
-install_package less-530.tar.gz final-less
-install_package gzip-1.10.tar.xz final-gzip
-install_package iproute2-4.20.0.tar.xz final-iproute2
-install_package kbd-2.0.4.tar.xz final-kbd
-install_package libpipeline-1.5.1.tar.gz default
-install_package make-4.2.1.tar.bz2 final-make
-install_package patch-2.7.6.tar.xz default
-install_package man-db-2.8.5.tar.xz final-mandb
-install_package tar-1.31.tar.xz final-tar
-install_package texinfo-6.5.tar.xz final-texinfo
-install_package vim81.tar.bz2 final-vim
-install_package procps-ng-3.3.15.tar.xz final-procps
-install_package util-linux-2.33.1.tar.xz final-util
-install_package e2fsprogs-1.44.5.tar.gz final-e2fsprogs
-install_package sysklogd-1.5.1.tar.gz final-sysklogd
-install_package sysvinit-2.93.tar.xz final-sysvinit
-install_package eudev-3.2.7.tar.gz final-eudev
+install_package zlib-1.2.11.tar.xz final-zlib "zlib" "1.2.11"
+install_package file-5.36.tar.gz default "file" "5.36"
+install_package readline-8.0.tar.gz final-readline "readline" "5.36"
+install_package m4-1.4.18.tar.xz final-m4 "m4" "1.4.18"
+install_package bc-1.07.1.tar.gz final-bc "bc" "1.07.1"
+install_package binutils-2.32.tar.xz final-binutils "binutils" "2.32"
+install_package gmp-6.1.2.tar.xz final-gmp "gmp" "6.1.2"
+install_package mpfr-4.0.2.tar.xz final-mpfr "mpfr" "4.0.2"
+install_package mpc-1.1.0.tar.gz final-mpc "mpc" "1.1.0" 
+install_package shadow-4.6.tar.xz final-shadow "shadow" "4.6"
+install_package gcc-8.2.0.tar.xz final-gcc "gcc" "8.2.0"
+install_package bzip2-1.0.6.tar.gz final-bzip2 "bzip2" "1.0.6"
+install_package pkg-config-0.29.2.tar.gz final-pkgconfig "pkg-config" "0.29.2" 
+install_package ncurses-6.1.tar.gz final-ncurses "ncurses" "6.1"
+install_package attr-2.4.48.tar.gz final-attr "attr" "2.4.48"
+install_package acl-2.2.53.tar.gz final-acl "acl" "2.2.53"
+install_package libcap-2.26.tar.xz final-libcap "libcap" "2.26"
+install_package sed-4.7.tar.xz final-sed "sed" "4.7"
+install_package psmisc-23.2.tar.xz final-psmisc "psmisc" "23.2"
+install_package iana-etc-2.30.tar.bz2 final-iana "iana-etc" "2.30"
+install_package bison-3.3.2.tar.xz final-bison "bison" "3.3.2"
+install_package flex-2.6.4.tar.gz final-flex "flex" "2.6.4"
+install_package grep-3.3.tar.xz final-grep "grep" "3.3"
+install_package bash-5.0.tar.gz final-bash "bash" "5.0"
+install_package libtool-2.4.6.tar.xz default "libtool" "2.4.6"
+install_package gdbm-1.18.1.tar.gz final-gdbm "gdbm" "1.18.1"
+install_package gperf-3.1.tar.gz final-gperf "gperf" "3.1"
+install_package expat-2.2.6.tar.bz2 final-expat "expat" "2.2.6"
+install_package inetutils-1.9.4.tar.xz final-inetutils "inetutils" "1.9.4"
+install_package perl-5.28.1.tar.xz final-perl "perl" "5.28.1"
+install_package XML-Parser-2.44.tar.gz final-xmlparser "xml-parser" "2.44"
+install_package intltool-0.51.0.tar.gz final-intltool "intltool" "0.51.0"
+install_package autoconf-2.69.tar.xz final-autoconf "autoconf" "2.69"
+install_package automake-1.16.1.tar.xz final-automake "automake" "1.16.1"
+install_package xz-5.2.4.tar.xz final-xz "xz" "5.2.4"
+install_package kmod-26.tar.xz final-kmod "kmod" "26"
+install_package gettext-0.19.8.1.tar.xz final-gettext "gettext" "0.19.8.1"
+install_package elfutils-0.176.tar.bz2 final-libelf "elfutils" "0.176"
+install_package libffi-3.2.1.tar.gz final-libffi "libffi" "3.2.1"
+install_package openssl-1.1.1a.tar.gz final-openssl "openssl" "1.1.1a"
+install_package Python-3.7.2.tar.xz final-python "python" "3.7.2"
+install_package ninja-1.9.0.tar.gz final-ninja "ninja" "1.9.0"
+install_package meson-0.49.2.tar.gz final-meson "meson" "0.49.2"
+install_package coreutils-8.30.tar.xz final-coreutils "coreutils" "8.30"
+install_package check-0.12.0.tar.gz final-check "check" "0.12.0"
+install_package diffutils-3.7.tar.xz default "diffutils" "3.7"
+install_package gawk-4.2.1.tar.xz final-gawk "gawk" "4.2.1"
+install_package findutils-4.6.0.tar.gz final-findutils "findutils" "4.6.0"
+install_package groff-1.22.4.tar.gz final-groff "groff" "1.22.4"
+install_package grub-2.02.tar.xz final-grub "grub" "2.02"
+install_package less-530.tar.gz final-less "less" "530"
+install_package gzip-1.10.tar.xz final-gzip "gzip" "1.10"
+install_package iproute2-4.20.0.tar.xz final-iproute2 "iproute2" "4.20.0"
+install_package kbd-2.0.4.tar.xz final-kbd "kbd" "2.0.4"
+install_package libpipeline-1.5.1.tar.gz default "libpipeline" "1.5.1"
+install_package make-4.2.1.tar.bz2 final-make "make" "4.2.1"
+install_package patch-2.7.6.tar.xz default "patch" "2.7.6"
+install_package man-db-2.8.5.tar.xz final-mandb "mandb" "2.8.5"
+install_package tar-1.31.tar.xz final-tar "tar" "1.31"
+install_package texinfo-6.5.tar.xz final-texinfo "texinfo" "6.5"
+install_package vim81.tar.bz2 final-vim "vim" "8.1"
+install_package procps-ng-3.3.15.tar.xz final-procps "procps-ng" "3.3.15"
+install_package util-linux-2.33.1.tar.xz final-util "util" "2.33.1"
+install_package e2fsprogs-1.44.5.tar.gz final-e2fsprogs "e2fsprogs" "1.44.5"
+install_package sysklogd-1.5.1.tar.gz final-sysklogd "sysklogd" "1.5.1"
+install_package sysvinit-2.93.tar.xz final-sysvinit "sysvinit" "2.93"
+install_package eudev-3.2.7.tar.gz final-eudev "eudev" "3.2.7"
 
 popd
 
