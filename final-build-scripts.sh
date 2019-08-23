@@ -415,7 +415,7 @@ function final-bzip2()
   make -f Makefile-libbz2_so
   make clean
   make
-  make DESTDIR=/usr/pkg/$1/$2/usr install
+  make PREFIX=/usr/pkg/$1/$2/usr install
   cp -v bzip2-shared /bin/bzip2
   cp -av libbz2.so* /lib
   ln -sv ../../lib/libbz2.so.1.0 /usr/lib/libbz2.so
