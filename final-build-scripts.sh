@@ -354,7 +354,7 @@ function final-gcc()
   # This is a corner case, where the package has to be fully installed
   # inside build function and not in general installation function.
   # This should, however, not break the build.
-  cp -rsv /usr/pkg/$1/$2/* /
+  cp -rfsv /usr/pkg/$1/$2/* /
 
   ln -sv ../usr/bin/cpp /lib
   ln -sv gcc /usr/bin/cc
