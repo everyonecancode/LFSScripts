@@ -166,6 +166,7 @@ function final-glibc()
   localedef -i ja_JP -f EUC-JP ja_JP
   localedef -i ja_JP -f SHIFT_JIS ja_JP.SIJS 2> /dev/null || true
   localedef -i ja_JP -f UTF-8 ja_JP.UTF-8
+  localedef -i pl_PL -f ISO-8859-2 pl_PL
   localedef -i ru_RU -f KOI8-R ru_RU.KOI8-R
   localedef -i ru_RU -f UTF-8 ru_RU.UTF-8
   localedef -i tr_TR -f UTF-8 tr_TR.UTF-8
@@ -1148,7 +1149,7 @@ function install_package()
   rm -rf $foldername
 
   # Link /usr/pkg to user space
-  cp -rvs /usr/pkg/$3/$4/* /
+  cp -rfvs /usr/pkg/$3/$4/* /
 }
 
 install_package linux-4.20.12.tar.xz final-linux "linux" "4.20.12"
