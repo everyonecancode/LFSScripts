@@ -141,6 +141,10 @@ function final-glibc()
   cp -v ../nscd/nscd.conf /etc/nscd.conf
   mkdir -pv /var/cache/nscd
   mkdir -pv /usr/lib/locale
+
+  # Glibc must be installed on system before running
+  # localedef. This should not break the build
+  cp -rvs /usr/pkg/$1/$2/* /
   localedef -i POSIX -f UTF-8 C.UTF-8 2> /dev/null || true
   localedef -i cs_CZ -f UTF-8 cs_CZ.UTF-8
   localedef -i de_DE -f ISO-8859-1 de_DE
