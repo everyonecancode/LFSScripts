@@ -316,6 +316,10 @@ function final-shadow()
   make
   make DESTDIR=/usr/pkg/$1/$2/ install
   cp -v /usr/pkg/$1/$2/usr/bin/passwd /bin
+  
+  # Shadow must be installed on system before running
+  # commands below.
+  cp -rvs /usr/pkg/$1/$2/* /
   pwconv
   grpconv
 }
