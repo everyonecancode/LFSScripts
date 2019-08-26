@@ -735,7 +735,10 @@ function final-libelf()
   make
   # make check
   make -C libelf DESTDIR=/usr/pkg/$1/$2 install
-  install -vm644 config/libelf.pc /usr/pkg/$1/$2/usr/lib/pkgconfig
+
+  # create directory for storing pkconfig file
+  mkdir -pv /usr/pkg/$1/$2/usr/lib/pkgconfig
+  install -vm644 config/libelf.pc /usr/pkg/$1/$2/usr/lib/pkgconfig/
 }
 
 # Libffi-3.2.1
