@@ -521,8 +521,8 @@ function final-sed()
 function final-psmisc()
 {
   default "psmisc" "23.2"
-  cp -v /usr/pkg/pcmisc/23.2/usr/bin/fuser   /bin
-  mv -v /usr/pkg/pcmisc/23.2/usr/bin/killall /bin
+  cp -v /usr/pkg/psmisc/23.2/usr/bin/fuser   /bin
+  mv -v /usr/pkg/psmisc/23.2/usr/bin/killall /bin
 }
 
 # Iana-Etc-2.30
