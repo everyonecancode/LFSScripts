@@ -459,7 +459,7 @@ function final-ncurses()
   rm -vf                     /usr/pkg/$1/$2/usr/lib/libcursesw.so
   echo "INPUT(-lncursesw)" > /usr/pkg/$1/$2/usr/lib/libcursesw.so
   ln -sfv libncurses.so      /usr/pkg/$1/$2/usr/lib/libcurses.so
-  mkdir -v       /usr/pkg/$1/$2/usr/share/doc/ncurses-6.1
+  mkdir -pv       /usr/pkg/$1/$2/usr/share/doc/ncurses-6.1
   cp -v -R doc/* /usr/pkg/$1/$2/usr/share/doc/ncurses-6.1
 }
 
