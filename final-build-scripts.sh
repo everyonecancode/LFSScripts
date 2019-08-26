@@ -833,13 +833,17 @@ function final-coreutils()
   #           -c "PATH=$PATH make RUN_EXPENSIVE_TESTS=yes check"
   sed -i '/dummy/d' /etc/group
   make DESTDIR=/usr/pkg/$1/$2 install
-  cp -v /usr/pkg/$1/$2/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /bin
-  cp -v /usr/pkg/$1/$2/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /bin
-  cp -v /usr/pkg/$1/$2/usr/bin/{rmdir,stty,sync,true,uname} /bin
+
+  mkdir -pv /usr/pkg/$1/$2/bin
+  mkdir -pv /usr/pkg/$1/$2/usr/sbin
+  mkdir -pv /usr/pkg/$1/$2/usr/share/man/man8
+  cp -v /usr/pkg/$1/$2/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} /usr/pkg/$1/$2/bin
+  cp -v /usr/pkg/$1/$2/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} /usr/pkg/$1/$2/bin
+  cp -v /usr/pkg/$1/$2/usr/bin/{rmdir,stty,sync,true,uname} /usr/pkg/$1/$2/bin
   mv -v /usr/pkg/$1/$2/usr/bin/chroot /usr/pkg/$1/$2/usr/sbin
-  mv -v //usr/pkg/$1/$2usr/share/man/man1/chroot.1 /usr/pkg/$1/$2/usr/share/man/man8/chroot.8
-  sed -i s/\"1\"/\"8\"/1 /usr/share/man/man8/chroot.8
-  cp -v /usr/pkg/$1/$2/usr/bin/{head,nice,sleep,touch} /bin
+  mv -v /usr/pkg/$1/$2/usr/share/man/man1/chroot.1 /usr/pkg/$1/$2/usr/share/man/man8/chroot.8
+  sed -i s/\"1\"/\"8\"/1 /usr/pkg/$1/$2/usr/share/man/man8/chroot.8
+  cp -v /usr/pkg/$1/$2/usr/bin/{head,nice,sleep,touch} /usr/pkg/$1/$2/bin
 }
 
 # Check-0.12.0
