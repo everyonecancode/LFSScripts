@@ -529,7 +529,7 @@ function final-psmisc()
 function final-iana()
 {
   make
-  make DESTDIR=/usr/pkg/$1/$2 install
+  make DESTDIR=/usr/pkg/$1/$2/usr install
 }
 
 # Bison-3.3.2
