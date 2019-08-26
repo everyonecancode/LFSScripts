@@ -498,7 +498,7 @@ function final-libcap()
   sed -i '/install.*STALIBNAME/d' libcap/Makefile
   make
   make RAISE_SETFCAP=no lib=lib prefix=/usr/pkg/$1/$2/usr install
-  chmod -v 755 /usr/lib/libcap.so.2.26
+  chmod -v 755 /usr/pkg/$1/$2/usr/lib/libcap.so.2.26
   cp -v /usr/pkg/$1/$2/usr/lib/libcap.so.* /lib
   ln -sfv ../../lib/$(readlink /usr/lib/libcap.so) /usr/lib/libcap.so
 }
