@@ -800,6 +800,9 @@ function final-ninja()
   python3 configure.py
 #  ./ninja ninja_test
 #  ./ninja_test --gtest_filter=-SubprocessTest.SetWithLots
+  mkdir -pv /usr/pkg/$1/$2/usr/bin/
+  mkdir -pv /usr/pkg/$1/$2/usr/share/bash-completion/completions/
+  mkdir -pv /usr/pkg/$1/$2/usr/share/zsh/site-functions/
   install -vm755 ninja /usr/pkg/$1/$2/usr/bin/
   install -vDm644 misc/bash-completion /usr/pkg/$1/$2/usr/share/bash-completion/completions/ninja
   install -vDm644 misc/zsh-completion  /usr/pkg/$1/$2/usr/share/zsh/site-functions/_ninja
