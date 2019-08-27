@@ -921,7 +921,7 @@ function final-iproute2()
   rm -fv man/man8/arpd.8
   sed -i 's/.m_ipt.o//' tc/Makefile
   make
-  make DOCDIR=/usr/pkg/$1/$2/usr/share/doc/iproute2-4.20.0 DESTDIR=/usr/pkg/$1/$2 install
+  make DOCDIR=/usr/share/doc/iproute2-4.20.0 DESTDIR=/usr/pkg/$1/$2 install
 }
 
 # Kbd-2.0.4
@@ -1285,6 +1285,7 @@ install_package eudev-3.2.7.tar.gz final-eudev "eudev" "3.2.7"
 
 popd
 
+echo "Everything sucessfully installed"
 # TODO: Remove debug symbols
 
 # Clean up
