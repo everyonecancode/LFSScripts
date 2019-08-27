@@ -1,4 +1,6 @@
 #!/bin/bash
+
+set -e
 pushd /sources
 tar -xf linux-4.20.12.tar.xz
 pushd linux-4.20.12

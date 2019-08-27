@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 # Make drive bootable
 grub-install /dev/sda
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 DOMAIN=lfs
 
 # Configure eth0 network interface
