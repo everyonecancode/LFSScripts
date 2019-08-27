@@ -105,5 +105,18 @@ fi
 
 # Chroot to new environment. Using new script for that.
 cp final-build-scripts.sh $LFS/
-# Set variables for this build
+
+# Build system software
 HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /sbin/chroot "$LFS" /tools/bin/bash +h final-build-scripts.sh
+
+# Configure network
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h configure-network.sh
+
+# System configuration
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h configure-system.sh
+
+# Build default x86 linux kernel
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h build-kernel.sh
+
+# Install GRUB
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h install-grub.sh

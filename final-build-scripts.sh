@@ -1142,6 +1142,12 @@ EOF
   LD_LIBRARY_PATH=/tools/lib udevadm hwdb --update
 }
 
+#  LFS-Bootscripts-20180820
+function final-lfs-bootscripts
+{
+  make DESTDIR=/usr/pkg/$1/$2 install
+}
+
 # function final-for extracting packages, removing folders after installation etc.
 # $1 archive to process
 # $2 function final-for a package to run
@@ -1282,7 +1288,7 @@ install_package e2fsprogs-1.44.5.tar.gz final-e2fsprogs "e2fsprogs" "1.44.5"
 install_package sysklogd-1.5.1.tar.gz final-sysklogd "sysklogd" "1.5.1"
 install_package sysvinit-2.93.tar.xz final-sysvinit "sysvinit" "2.93"
 install_package eudev-3.2.7.tar.gz final-eudev "eudev" "3.2.7"
-
+install_package lfs-bootscripts-20180820.tar.bz2 final-lfs-bootscripts "lfs-bootscripts" "2018.08.20"
 popd
 
 echo "Everything sucessfully installed"
