@@ -1008,7 +1008,8 @@ function final-vim()
   for L in  /usr/pkg/$1/$2/usr/share/man/{,*/}man1/vim.1; do
       ln -sv vim.1 $(dirname $L)/vi.1
   done
-  ln -sv ../vim/vim81/doc /usr/pkg/$1/$2/usr/share/doc/vim-8.1
+  mkdir -pv /usr/pkg/$1/$2/usr/share/doc/vim-8.1
+  ln -sv /usr/pkg/$1/$2/usr/vim/vim81/doc/* /usr/pkg/$1/$2/usr/share/doc/vim-8.1/
   cat > /etc/vimrc << "EOF"
 " Begin /etc/vimrc
 
@@ -1102,7 +1103,8 @@ function final-sysklogd()
   sed -i '/Error loading kernel symbols/{n;n;d}' ksym_mod.c
   sed -i 's/union wait/int/' syslogd.c
   make
-  make BINDIR=/sbin install
+  mkdir -pv /usr/pkg/$1/$2/usr/share/man/man8
+  make prefix=/usr/pkg/$1/$2/ BINDIR=/sbin install
 }
 
 # Sysvinit-2.93
@@ -1110,7 +1112,13 @@ function final-sysvinit()
 {
   patch -Np1 -i ../sysvinit-2.93-consolidated-1.patch
   make
-  make DESTDIR=/usr/pkg/$1/$2 install
+  make install
+  cat > /usr/pkg/$1/$2/README << "EOF"
+SysVinit is installed directly into /sbin, /bin and /usr/bin.
+That makes sense, as the system NEEDS init binary to run the system
+after kernel boots up (well, no really, this can be any binary
+stored anywhere, but it searches /bin/init by default, so....).
+EOF
 }
 
 # Eudev-3.2.7
