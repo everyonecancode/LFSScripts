@@ -895,7 +895,8 @@ function final-grub()
               --disable-werror
   make
   make DESTDIR=/usr/pkg/$1/$2 install
-  mv -v /etc/bash_completion.d/grub /usr/pkg/$1/$2/usr/share/bash-completion/completions
+  mkdir -pv /usr/pkg/$1/$2/usr/share/bash-completion/completions
+  mv -v /usr/pkg/$1/$2/etc/bash_completion.d/grub /usr/pkg/$1/$2/usr/share/bash-completion/completions
 }
 
 # Less-530
