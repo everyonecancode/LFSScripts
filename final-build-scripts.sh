@@ -316,7 +316,7 @@ function final-shadow()
   make
   make DESTDIR=/usr/pkg/$1/$2/ install
   cp -v /usr/pkg/$1/$2/usr/bin/passwd /bin
-  
+
   # Shadow must be installed on system before running
   # commands below.
   cp -rvs /usr/pkg/$1/$2/* /
@@ -1229,11 +1229,11 @@ install_package bc-1.07.1.tar.gz final-bc "bc" "1.07.1"
 install_package binutils-2.32.tar.xz final-binutils "binutils" "2.32"
 install_package gmp-6.1.2.tar.xz final-gmp "gmp" "6.1.2"
 install_package mpfr-4.0.2.tar.xz final-mpfr "mpfr" "4.0.2"
-install_package mpc-1.1.0.tar.gz final-mpc "mpc" "1.1.0" 
+install_package mpc-1.1.0.tar.gz final-mpc "mpc" "1.1.0"
 install_package shadow-4.6.tar.xz final-shadow "shadow" "4.6"
 install_package gcc-8.2.0.tar.xz final-gcc "gcc" "8.2.0"
 install_package bzip2-1.0.6.tar.gz final-bzip2 "bzip2" "1.0.6"
-install_package pkg-config-0.29.2.tar.gz final-pkgconfig "pkg-config" "0.29.2" 
+install_package pkg-config-0.29.2.tar.gz final-pkgconfig "pkg-config" "0.29.2"
 install_package ncurses-6.1.tar.gz final-ncurses "ncurses" "6.1"
 install_package attr-2.4.48.tar.gz final-attr "attr" "2.4.48"
 install_package acl-2.2.53.tar.gz final-acl "acl" "2.2.53"
