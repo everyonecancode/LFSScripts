@@ -934,7 +934,7 @@ function final-kbd()
   make
   # make check
   make DESTDIR=/usr/pkg/$1/$2 install
-  mkdir -v       /usr/pkg/$1/$2/usr/share/doc/kbd-2.0.4
+  mkdir -pv       /usr/pkg/$1/$2/usr/share/doc/kbd-2.0.4
   cp -R -v docs/doc/* /usr/pkg/$1/$2/usr/share/doc/kbd-2.0.4
 }
 
