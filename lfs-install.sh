@@ -104,7 +104,7 @@ fi
 # TODO: For now no package management is needed. Fix for later?
 
 # Chroot to new environment. Using new script for that.
-cp final-build-scripts.sh $LFS/
+cp final-build-scripts.sh configure-network.sh configure-system.sh build-kernel.sh install-grub.sh $LFS/
 
 # Build system software
 HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin:/tools/bin /sbin/chroot "$LFS" /tools/bin/bash +h final-build-scripts.sh
