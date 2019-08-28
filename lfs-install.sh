@@ -100,8 +100,6 @@ if [ -h $LFS/dev/shm ]; then
   mkdir -pv $LFS/$(readlink $LFS/dev/shm)
 fi
 
-# TODO: For now no package management is needed. Fix for later?
-
 # Chroot to new environment. Using new script for that.
 cp final-build-scripts.sh configure-network.sh configure-system.sh build-kernel.sh install-grub.sh $LFS/
 
