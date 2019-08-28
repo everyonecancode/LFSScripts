@@ -20,7 +20,7 @@ mkdir -v $LFS/sources
 # dowload files
 while [ $wget_timout -gt 0 ]; do
   # break if no error
-  wget --input-file=wget-list --continue --directory-prefix=$LFS/sources -a wget.log && break
+  wget --input-file=wget-list --continue --directory-prefix=$LFS/sources && break
 
   # break when number of files downloaded are equal to the number
   # of lines in wget-list
