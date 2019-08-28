@@ -1103,7 +1103,7 @@ function final-sysklogd()
   sed -i '/Error loading kernel symbols/{n;n;d}' ksym_mod.c
   sed -i 's/union wait/int/' syslogd.c
   make
-  mkdir -pv /usr/pkg/$1/$2/usr/share/man/man8
+  mkdir -pv /usr/pkg/$1/$2/usr/share/man/man{5,8}
   make prefix=/usr/pkg/$1/$2/ BINDIR=/sbin install
 }
 
