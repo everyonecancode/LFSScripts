@@ -17,7 +17,7 @@ install -d /usr/pkg/linux/4.20.12/share/doc/linux-4.20.12
 cp -rv Documentation/*  /usr/pkg/linux/4.20.12/usr/share/doc/linux-4.20.12
 
 # Create links for documentation
-cp -rvs /usr/pkg/linux/4.20.12/usr/share/doc/linux-4.20.12/* usr/share/doc/linux-4.20.12/
+cp -rvs /usr/pkg/linux/4.20.12/usr/share/doc/linux-4.20.12/* /usr/share/doc/linux-4.20.12/
 
 
 # Create modprobe config file
