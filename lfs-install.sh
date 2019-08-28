@@ -1,5 +1,4 @@
 #!/bin/bash
-# This script assumes, that the basic filesystem is already created and we are running as root
 
 # Check if we are root
 if [ "$EUID" -ne 0 ]; then
@@ -13,7 +12,23 @@ PATH=$PATH:/usr/sbin:/sbin
 # Variables
 LFS=/mnt/lfs
 wget_timout=30
+drive=
 
+## Obtain drive to  install grub to
+while [ "$1" != ""]; do
+  case $1 in
+    -p | --partition) shift
+      drive=$1
+      ;;
+  esac
+  shift
+done
+
+if [ -z "$drive"]
+then
+  echo "Please specify the in form of /dev/sdx. I really don't want to mess your system with grub installation"
+  exit 1
+fi
 # Get sources and prepare LFS specific directories
 mkdir -v $LFS/sources
 
@@ -116,4 +131,4 @@ HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/us
 HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h build-kernel.sh
 
 # Install GRUB
-HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h install-grub.sh
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h install-grub.sh $drive

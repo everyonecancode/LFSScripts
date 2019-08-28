@@ -2,7 +2,7 @@
 
 set -e
 # Make drive bootable
-grub-install /dev/sda
+grub-install $1
 
 # Create grub configuration file
 cat > /boot/grub/grub.cfg << "EOF"
@@ -14,6 +14,6 @@ insmod ext4
 set root=(hd0,1)
 
 menuentry "GNU/Linux, Linux 4.20.12-lfs-8.4" {
-        linux   /boot/vmlinuz-4.20.12-lfs-8.4 root=/dev/sda1 ro
+        linux   /boot/vmlinuz-4.20.12-lfs-8.4 root=${1}1 ro
 }
 EOF
