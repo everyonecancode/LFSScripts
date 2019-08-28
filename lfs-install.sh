@@ -13,6 +13,7 @@ PATH=$PATH:/usr/sbin:/sbin
 LFS=/mnt/lfs
 wget_timout=30
 drive=
+number=
 
 ## Obtain drive to  install grub to
 while [ "$1" != ""]; do
@@ -20,15 +21,23 @@ while [ "$1" != ""]; do
     -p | --partition) shift
       drive=$1
       ;;
+    -n | --number) shift
+      number=$1
   esac
   shift
 done
 
 if [ -z "$drive"]
 then
-  echo "Please specify the in form of /dev/sdx. I really don't want to mess your system with grub installation"
+  echo "Please specify drive in the form of /dev/sdx. I really don't want to mess your system with grub installation"
   exit 1
 fi
+if [ -z "$number"]
+then
+  echo "Please specify boot partition number [i.e. '1']. I really don't want to mess your system with grub installation"
+  exit 1
+fi
+
 # Get sources and prepare LFS specific directories
 mkdir -v $LFS/sources
 
@@ -131,4 +140,4 @@ HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/us
 HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h build-kernel.sh
 
 # Install GRUB
-HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h install-grub.sh $drive
+HOME=/root TERM="$TERM" PS1='(lfs chroot) \u:\w\$ ' PATH=/bin:/usr/bin:/sbin:/usr/sbin /sbin/chroot "$LFS" /bin/bash +h install-grub.sh $drive $number
