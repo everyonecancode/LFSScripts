@@ -18,7 +18,7 @@ number=
 ## Obtain drive to  install grub to
 while [ "$1" != ""]; do
   case $1 in
-    -p | --partition) shift
+    -d | --drive) shift
       drive=$1
       ;;
     -n | --number) shift
