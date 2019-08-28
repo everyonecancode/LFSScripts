@@ -19,7 +19,7 @@ set root=(hd2,3)
 ```
 
 ## Usage
-1. Format drive (usally /dev/sda) into single partition and mount it to /mnt/lfs
+1. Format drives however you like and mount root partition on /mnt/lfs. Mount rest of partition there to create any folder configuration you desire. I.e. format /dev/sda into one partition and mount it into /mnt. Or mount /dev/sda into root and boot partitions and mount them to /mnt/lfs and /mnt/lfs/boot.
 2. Run version-check.sh to see if our system satisfies the requirements
 3. Run ./lfs-install.sh --drive /dev/sdx --number 1 (for example: "./lfs-install.sh --drive /dev/sda --number 1" ) AS ROOT!
 4. Go for a walk, make some tea, learn a new language or start a family, because building all this software takes a LOT of time.
