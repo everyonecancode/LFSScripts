@@ -10,7 +10,7 @@ All build commands and version-check.sh script has been copied from LFS site, ht
 
 ## Options
 --drive | -d - drive, where grub will be installed (i.ex /dev/sda).  
---number| -n - boot partition number. This will be used in grub.cfg.
+--number | -n - boot partition number. This will be used in grub.cfg.
 
 !WARNING!
 As of now, no script for changing "sdx" to "hdx" in generating menuconfig is present. If you choose any other partition than /dev/sda, you will need to change "set root=" line in grub.cfg manually. Just to make sure, you get it: "sda" is "hd0", "sdb" is "hd1", "sdc" is "hd2" and so on. So, for example, if your boot partition is /dev/sdc3, your "set root" line will look like this:
