@@ -6,7 +6,7 @@ This is still work in progress. I made this repo public righ now because it's mu
 
 Bunch of scripts created for "quickly" building a LFS machine. This has been created with virtual machine in mind, with a single partition created, so not really an optimal solution for main personal machine, but for fun with kernel and system configuration. It works when run on Debian Live CD, so we can run VM, launch the CD, create and mount drive and just run the scripts.
 
-All build commands and version-check.sh script has been copied from LFS site, http://www.linuxfromscratch.org. Big shoutout to them, without them this scripts would have either never existed or it would take a much longer to complete those scripts. 
+All build commands and version-check.sh script has been copied from LFS site, http://www.linuxfromscratch.org. Big shoutout to them, without them these scripts would have either never existed or it would take a much longer to complete those scripts. 
 
 ## Options
 --drive | -d - drive, where grub will be installed (i.ex /dev/sda).  
