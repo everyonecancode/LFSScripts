@@ -16,7 +16,6 @@ wget_timout=30
 
 # Get sources and prepare LFS specific directories
 mkdir -v $LFS/sources
-wget http://www.linuxfromscratch.org/lfs/view/stable/wget-list
 
 # dowload files
 while [ $wget_timout -gt 0 ]; do
